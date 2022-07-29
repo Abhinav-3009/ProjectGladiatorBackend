@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ScholarshipPortal.Models;
+using ScholarshipPortal.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,13 +34,13 @@ namespace ScholarshipPortal.Controllers
             var data = (from d in db.Students where d.StudentId == id select d).FirstOrDefault();
             if (data == null)
             {
-                return NotFound($"Department {id} not present");
+                return NotFound($"Student {id} not present");
             }
             return Ok(data);
         }
         [HttpPost]
         [Route("AddStudent")]
-        public IActionResult PostDept(Student student)
+        public IActionResult PostStudent(Student student)
         {
             if (ModelState.IsValid)
             {
@@ -54,6 +55,17 @@ namespace ScholarshipPortal.Controllers
                 }
             }
             return Created("Record successfully added", student);
+        }
+        [HttpPost]
+        [Route("StudentLogin")]
+        public IActionResult PostStudentLogin(StudentLogin login)
+        {
+            var data = db.Students.ToList();
+            var student = (from d in data where d.Aadhaar == login.Aadhaar && d.Password == login.Password select d).FirstOrDefault();
+
+            if (student == null)
+                return BadRequest("Username or Password is Incorrect");
+            return Ok(student);
         }
     }
 }
