@@ -37,5 +37,23 @@ namespace ScholarshipPortal.Controllers
             }
             return Ok(data);
         }
+        [HttpPost]
+        [Route("AddStudent")]
+        public IActionResult PostDept(Student student)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    db.Students.Add(student);
+                    db.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+            return Created("Record successfully added", student);
+        }
     }
 }
