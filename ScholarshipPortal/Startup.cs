@@ -10,6 +10,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using ScholarshipPortal.Models;
+using Microsoft.EntityFrameworkCore;
+
 namespace ScholarshipPortal
 {
     public class Startup
@@ -25,6 +28,10 @@ namespace ScholarshipPortal
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddDbContext<ScholarshipPortalContext>(options => options.UseSqlServer
+            (Configuration.GetConnectionString("mycon")));
+            services.AddCors();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,7 +43,7 @@ namespace ScholarshipPortal
             }
 
             app.UseRouting();
-
+            app.UseCors(options => { options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); });
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
